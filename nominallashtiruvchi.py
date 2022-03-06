@@ -1,14 +1,17 @@
 import functions
 DF = []
-#with open("init_data\\itburi\\Volki_Sobaki.csv") as objfile:
-with open("init_data\\giper2\\Objects.csv") as objfile:
-#with open("init_data\\giper\\Objects2.csv") as objfile:
+tanlanma_nomi = "giper2"
+# tanlanma_nomi = "itburi"
+# tanlanma_nomi = "giper"
+
+
+with open(f"init_data\\{tanlanma_nomi}\\Objects.csv") as objfile:
     for row in objfile:
         DF.append([float(x) for x in row.split()])
 
 target = []
-#with open("init_data\\itburi\\Target.csv") as targetfile:
-with open("init_data\\giper2\\Target.csv") as targetfile:
+
+with open(f"init_data\\{tanlanma_nomi}\\Target.csv") as targetfile:
     for row in targetfile:
         target.append(int(row))
 
@@ -34,7 +37,7 @@ for c in range(len(DF[0])-1):
 #     print("-", DF[x])
 #     print("+", DF2[x])
 
-with open("out_data/outdata.csv", 'w') as outfile:
+with open(f"out_data\\{tanlanma_nomi}\\Objects.csv", 'w') as outfile:
     for row in DF:
         a = ' '.join(map(str, row))
         outfile.write(a + '\n')
