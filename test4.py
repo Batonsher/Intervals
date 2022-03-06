@@ -78,11 +78,16 @@ obyektning_umulashgan_bahosi = dict()
 for obj_key in range(obyektlar_soni):     # HAR BIR OBJECT UCHUN
     RS = 0
     for feature_key in range(alomatlar_soni):
-        RS += featurening_vazni[feature_key] * (intervaldagi_vakillar[obj_key][feature_key][0] / k1_quvvat - intervaldagi_vakillar[obj_key][feature_key][1] / k2_quvvat)
-        print(feature_key, RS)
+        RS += featurening_vazni[feature_key] * \
+              (intervaldagi_vakillar[obj_key][feature_key][0] \
+               / k1_quvvat - intervaldagi_vakillar[obj_key][feature_key][1] / k2_quvvat)
+        # print(feature_key, RS)
+        # print(obj_key, feature_key, intervaldagi_vakillar[obj_key][feature_key][0] / k1_quvvat - intervaldagi_vakillar[obj_key][feature_key][1] / k2_quvvat)
     obyektning_umulashgan_bahosi[obj_key] = RS
 
 # print(intervaldagi_vakillar[98][0][1])
 for el in obyektning_umulashgan_bahosi.items():
     print(el)
+# for obj_key in range(obyektlar_soni):
+#     print(obj_key, intervaldagi_vakillar[obj_key][0])
 
