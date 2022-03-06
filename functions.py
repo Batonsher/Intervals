@@ -5,6 +5,7 @@ def eta_finder(target, K1, K2):
 
     return d1 / K1, d2 / K2
 
+
 def tegishlilik_func(target, K1, K2):
     a = eta_finder(target, K1, K2)
     return a[0] / (a[0] + a[1])
@@ -21,16 +22,17 @@ def gini_function(intervals, m):
     return G
 
 
-def intervalga_ajratish(ustun, target, K1, K2, result=None, indexlar=None):
+def intervalga_ajratish(ustun, target, K1, K2, result=None, indexlar=None, unsorted_indexlar=None):
     if not result:
         result = []
         indexlar = list(range(len(target)))
+        unsorted_indexlar = indexlar[:]
 
     if not target: return result
     # sorting
-    zipped_lists = zip(ustun, target)
+    zipped_lists = zip(ustun, target, unsorted_indexlar)
     sorted_pairs = sorted(zipped_lists)
-    ustun, target = [list(tuple) for tuple in zip(*sorted_pairs)]
+    ustun, target, unsorted_indexlar = [list(tuple) for tuple in zip(*sorted_pairs)]
     #print(ustun)
 
 
@@ -57,18 +59,22 @@ def intervalga_ajratish(ustun, target, K1, K2, result=None, indexlar=None):
 
     u2, v2 = indexlar[u], indexlar[v] if v < len(target) else indexlar[v-1]+1
 
-    javob = (maksi, u2, v2, interval_uzunligi, tegishlilik_func(target[u:v], K1, K2))
-    # print(maksi, u2, v2, interval_uzunligi, tegishlilik_func(target[u:v], K1, K2))
+    javob = (maksi, u2, v2, interval_uzunligi, tegishlilik_func(target[u:v], K1, K2), unsorted_indexlar[u:v])
+    # print(maksi, u2, v2, interval_uzunligi, tegishlilik_func(target[u:v], K1, K2), indexlar)
 
     result.append(javob)
 
     # qolgan intervallar uchun
     if target[:u]:
-        result = intervalga_ajratish(ustun[:u], target[:u], K1, K2, result, indexlar[:u])
+        result = intervalga_ajratish(ustun[:u], target[:u], K1, K2, result, indexlar[:u], unsorted_indexlar[:u])
     if target[v:]:
-        result = intervalga_ajratish(ustun[v:], target[v:], K1, K2, result, indexlar[v:])
+        result = intervalga_ajratish(ustun[v:], target[v:], K1, K2, result, indexlar[v:], unsorted_indexlar[v:])
 
     return result
 
+
+def yangi_df(fullpath):
+    with open(fullpath) as infile :
+        pass
 
 

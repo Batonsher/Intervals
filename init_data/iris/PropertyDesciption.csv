@@ -1,0 +1,5 @@
+sepallength;NUM;Признак номер 1
+sepalwidth;NUM;Признак номер 2
+petallength;NUM;Признак номер 3
+petalwidth;NUM;Признак номер 4
+Целевой класс;NOM;;0:Iris-setosa;1:Iris-versicolor;2:Iris-virginica
