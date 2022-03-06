@@ -16,6 +16,8 @@ with open(f"out_data\\{tanlanma_nomi}\\Objects.csv") as in_file:
 k1_quvvat = target.count(1)
 k2_quvvat = target.count(2)
 
+obyektlar_soni = len(target)
+alomatlar_soni = len(DF[0])
 
 #########################################################
 #    UXSHASHLIK va FARQ                                ##
@@ -23,6 +25,12 @@ k2_quvvat = target.count(2)
 
 sinflararo_farq = dict()
 sinflararo_uxshashlik = dict()
+
+# intervaldagi_vakillar = {x: {} for x in range(obyektlar_soni)}
+intervaldagi_vakillar = dict()
+for obj_key in range(obyektlar_soni):
+    for feature_key in range(alomatlar_soni):
+        intervaldagi_vakillar[obj_key] = {feature_key: 0}
 
 for x in range(29):             # har bir Feature uchun
     featurening_sinflararo_farqi = 1
@@ -32,7 +40,7 @@ for x in range(29):             # har bir Feature uchun
     for interval in db[x]:      # har bir interval uchun
         k1_vakillari = k2_vakillari = 0
         # print(interval)
-        for ind in interval[-1]:   # feature'ning intervalidagi  har bir index uchun
+        for ind in interval[5]:   # feature'ning intervalidagi  har bir index uchun
             if target[ind] == 1:
                 k1_vakillari += 1
             else:
@@ -41,6 +49,13 @@ for x in range(29):             # har bir Feature uchun
         # print(k1_vakillari, k2_vakillari)
         farq_summa += k1_vakillari*k2_vakillari
         uxshash_summa += k1_vakillari*(k1_vakillari - 1) + k2_vakillari * (k2_vakillari - 1)
+
+        # print(x, interval)#, intervaldagi_vakillar[x])
+        for ind in interval[5]:
+            intervaldagi_vakillar[ind][x] = (k1_vakillari, k2_vakillari)
+            # print(ind, intervaldagi_vakillar[ind])
+        # print(interval[], intervaldagi_vakillar[x])
+
     featurening_sinflararo_farqi -= farq_summa / (k1_quvvat * k2_quvvat)
     featurening_sinflararo_uxshashligi = uxshash_summa / (k1_quvvat ** 2 - k1_quvvat + k2_quvvat ** 2 - k2_quvvat)
 
@@ -58,6 +73,16 @@ for x in sinflararo_uxshashlik.keys():
 #     OBYEKTNING UMUMLASHGAN BAHOSI    #############
 ####################################################
 
+
 obyektning_umulashgan_bahosi = dict()
-for x in range(147):
-    ...
+for obj_key in range(obyektlar_soni):     # HAR BIR OBJECT UCHUN
+    RS = 0
+    for feature_key in range(alomatlar_soni):
+        RS += featurening_vazni[feature_key] * (intervaldagi_vakillar[obj_key][feature_key][0] / k1_quvvat - intervaldagi_vakillar[obj_key][feature_key][1] / k2_quvvat)
+        print(feature_key, RS)
+    obyektning_umulashgan_bahosi[obj_key] = RS
+
+# print(intervaldagi_vakillar[98][0][1])
+for el in obyektning_umulashgan_bahosi.items():
+    print(el)
+
