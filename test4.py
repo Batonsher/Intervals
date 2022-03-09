@@ -1,4 +1,6 @@
+### _ARISTOKRAT_ ###
 ### Baton 9-mart ###
+
 import pickle
 from nominallashtiruvchi import tanlanma_nomi
 
