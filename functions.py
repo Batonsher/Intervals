@@ -1,3 +1,47 @@
+def criteria1(ustun, k1_quvvat, k2_quvvat):
+    ustun = sorted(ustun, key=lambda x: x[1])
+    # ustun = [ (DF t/r, RS qiymati, sinf), ... ]
+
+    # print(ustun)
+    maxi = float('-inf'); qaytadigan_chegara = 0
+    for chegara in range(1, len(ustun)+1):
+        # uid hisobla
+        # chegarani chap qismi
+        chap_k1_vakillar = chap_k2_vakillar = 0
+        for el in ustun[:chegara]:
+            if el[2] == 1:
+                chap_k1_vakillar += 1
+            else:
+                chap_k2_vakillar += 1
+
+        # chegarani o'ng qismi
+        ung_k1_vakillar = ung_k2_vakillar = 0
+        for el in ustun[chegara:]:
+            if el[2] == 1:
+                ung_k1_vakillar += 1
+            else:
+                ung_k2_vakillar += 1
+        chap_surat = chap_k1_vakillar**2 - chap_k1_vakillar + ung_k1_vakillar**2 - ung_k1_vakillar
+        chap_surat += chap_k2_vakillar**2 - chap_k2_vakillar + ung_k2_vakillar**2 - ung_k2_vakillar
+
+        chap_mahraj = k1_quvvat ** 2 - k1_quvvat + k2_quvvat ** 2 - k2_quvvat
+
+        ung_surat  = chap_k1_vakillar * (k2_quvvat - chap_k2_vakillar)
+        ung_surat += chap_k2_vakillar * (k1_quvvat - chap_k1_vakillar)
+        ung_surat += ung_k1_vakillar * (k2_quvvat - ung_k2_vakillar)
+        ung_surat += ung_k2_vakillar * (k1_quvvat - ung_k1_vakillar)
+
+        ung_mahraj = 2 * k1_quvvat * k2_quvvat
+
+        summa = chap_surat / chap_mahraj * ung_surat / ung_mahraj
+
+        if summa > maxi:
+            qaytadigan_chegara = chegara
+            maxi = summa
+
+    return maxi, qaytadigan_chegara, ustun
+
+
 def eta_finder(target, K1, K2):
 
     d1 = target.count(1)
@@ -34,7 +78,6 @@ def intervalga_ajratish(ustun, target, K1, K2, result=None, indexlar=None, unsor
     sorted_pairs = sorted(zipped_lists)
     ustun, target, unsorted_indexlar = [list(tuple) for tuple in zip(*sorted_pairs)]
     #print(ustun)
-
 
     interval_uzunligi = maksi = float("-inf")
 

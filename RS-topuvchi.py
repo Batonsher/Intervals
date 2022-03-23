@@ -3,6 +3,7 @@
 ### Voaleykum-Assalom ###
 import pickle
 from nominallashtiruvchi import tanlanma_nomi
+import functions
 
 with open(f"out_data\\{tanlanma_nomi}\\intervals.baton", 'rb') as baton_file:
     db = dict(pickle.load(baton_file))
@@ -88,9 +89,18 @@ for obj_key in range(obyektlar_soni):     # HAR BIR OBJECT UCHUN
         # print(obj_key, feature_key, intervaldagi_vakillar[obj_key][feature_key][0] / k1_quvvat - intervaldagi_vakillar[obj_key][feature_key][1] / k2_quvvat)
     obyektning_umulashgan_bahosi[obj_key] = RS
 
-# print(intervaldagi_vakillar[98][0][1])
-for el in obyektning_umulashgan_bahosi.items():
+
+# I-Krieriyga tushuramiz, ya'ni RS'ni 2-ta intervalga bo'lamiz
+RS = [0]*len(obyektning_umulashgan_bahosi)
+for x, el in enumerate(obyektning_umulashgan_bahosi.items()):
+    RS[x] = (*el, target[x])
+    # print(el)
+
+a = functions.criteria1(RS, k1_quvvat, k2_quvvat)
+
+print(f"1-kriteriya qiymati: {a[0]:2.4f}; chegara:[0:{a[1]})[{a[1]}:{len(RS)})")
+for el in a[2]:
     print(el)
-# for obj_key in range(obyektlar_soni):
-#     print(obj_key, intervaldagi_vakillar[obj_key][0])
+
+
 
