@@ -98,9 +98,10 @@ for x, el in enumerate(obyektning_umulashgan_bahosi.items()):
 
 a = functions.criteria1(RS, k1_quvvat, k2_quvvat)
 
-print(f"1-kriteriya qiymati: {a[0]:2.4f}; chegara:[0:{a[1]})[{a[1]}:{len(RS)})")
-for el in a[2]:
-    print(el)
+print(f"1-kriteriya qiymati: {a[0]:2.2f}; chegara:[0:{a[1]})[{a[1]}:{len(RS)})")
+print("t/r: DF:t/r, RS-qiymat, sinf")
+for x, el in enumerate(a[2]):
+    print(f"{x}: {el}")
 
 
 
