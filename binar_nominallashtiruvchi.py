@@ -1,5 +1,3 @@
-"""### _ARISTOKRAT_ ###"""
-
 import pickle
 from nominallashtiruvchi import tanlanma_nomi
 import functions

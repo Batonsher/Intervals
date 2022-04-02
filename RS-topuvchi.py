@@ -1,6 +1,3 @@
-### _ARISTOKRAT_ ###
-### Baton 9-mart ###
-### Voaleykum-Assalom ###
 import pickle
 from nominallashtiruvchi import tanlanma_nomi
 import functions
@@ -36,7 +33,7 @@ for obj_key in range(obyektlar_soni):
     for feature_key in range(alomatlar_soni):
         intervaldagi_vakillar[obj_key] = {feature_key: 0}
 
-for x in range(29):             # har bir Feature uchun
+for x in range(alomatlar_soni):             # har bir Feature uchun
     featurening_sinflararo_farqi = 1
     featurening_sinflararo_uxshashligi = 0
     farq_summa = 0
@@ -70,7 +67,7 @@ for x in range(29):             # har bir Feature uchun
 featurening_vazni = dict()
 for x in sinflararo_uxshashlik.keys():
     featurening_vazni[x] = sinflararo_uxshashlik[x] * sinflararo_farq[x]
-    # print(sinflararo_uxshashlik[x], sinflararo_farq[x], featurening_vazni[x])
+    #print(featurening_vazni[x])
 
 
 ####################################################
@@ -90,7 +87,7 @@ for obj_key in range(obyektlar_soni):     # HAR BIR OBJECT UCHUN
     obyektning_umulashgan_bahosi[obj_key] = RS
 
 
-# I-Krieriyga tushuramiz, ya'ni RS'ni 2-ta intervalga bo'lamiz
+# I-Kriteriyga tushuramiz, ya'ni RS'ni 2-ta intervalga bo'lamiz
 RS = [0]*len(obyektning_umulashgan_bahosi)
 for x, el in enumerate(obyektning_umulashgan_bahosi.items()):
     RS[x] = (*el, target[x])
@@ -98,10 +95,7 @@ for x, el in enumerate(obyektning_umulashgan_bahosi.items()):
 
 a = functions.criteria1(RS, k1_quvvat, k2_quvvat)
 
-print(f"1-kriteriya qiymati: {a[0]:2.2f}; chegara:[0:{a[1]})[{a[1]}:{len(RS)})")
+print(f"1-kriteriya qiymati: {a[0]:2.2f}; chegara:[0:{a[1]-1}]({a[1]-1}:{len(RS)})")
 print("t/r: DF:t/r, RS-qiymat, sinf")
 for x, el in enumerate(a[2]):
-    print(f"{x}: {el}")
-
-
-
+    print(f"{x+1}: {el}")

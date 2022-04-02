@@ -117,7 +117,7 @@ def intervalga_ajratish(ustun, target, K1, K2, result=None, indexlar=None, unsor
 
 
 def yangi_df(fullpath):
-    with open(fullpath) as infile :
+    with open(fullpath) as infile:
         pass
 
 
