@@ -1,11 +1,8 @@
 import functions
 import os
 import pickle
+from model_settings import tanlanma_nomi
 
-
-tanlanma_nomi = "giper2"
-# tanlanma_nomi = "itburi"
-# tanlanma_nomi = "giper"
 
 if __name__ == '__main__':
 
@@ -13,13 +10,13 @@ if __name__ == '__main__':
     if not os.path.exists(f"out_data\\{tanlanma_nomi}"):
         os.mkdir(f"out_data\\{tanlanma_nomi}")
 
-    with open(f"init_data\\{tanlanma_nomi}\\Uzb_Kor_ver2.csv") as objfile:
+    with open(f"init_data\\{tanlanma_nomi}\\Objects.csv") as objfile:
         for row in objfile:
             DF.append([float(x) for x in row.split()])
 
     target = []
 
-    with open(f"init_data\\{tanlanma_nomi}\\Target2.csv") as targetfile:
+    with open(f"init_data\\{tanlanma_nomi}\\Target.csv") as targetfile:
         for row in targetfile:
             target.append(int(row))
 

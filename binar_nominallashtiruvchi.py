@@ -1,5 +1,5 @@
 import pickle
-from nominallashtiruvchi import tanlanma_nomi
+from model_settings import tanlanma_nomi
 import functions
 import copy
 

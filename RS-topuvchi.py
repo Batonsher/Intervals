@@ -1,5 +1,5 @@
 import pickle
-from nominallashtiruvchi import tanlanma_nomi
+from model_settings import tanlanma_nomi
 import functions
 
 with open(f"out_data\\{tanlanma_nomi}\\intervals.baton", 'rb') as baton_file:
@@ -95,7 +95,8 @@ for x, el in enumerate(obyektning_umulashgan_bahosi.items()):
 
 a = functions.criteria1(RS, k1_quvvat, k2_quvvat)
 
-print(f"1-kriteriya qiymati: {a[0]:2.2f}; chegara:[0:{a[1]-1}]({a[1]-1}:{len(RS)})")
+# print(f"1-kriteriya qiymati: {a[0]:2.2f}; chegara:[0:{a[1]-1}]({a[1]-1}:{len(RS)})")  # BATON
+print(f"1-kriteriya qiymati: {a[0]:2.2f}; chegara:[0:{a[1]})[{a[1]}:{len(RS)})")        # _A_
 print("t/r: DF:t/r, RS-qiymat, sinf")
 for x, el in enumerate(a[2]):
     print(f"{x+1}: {el}")
