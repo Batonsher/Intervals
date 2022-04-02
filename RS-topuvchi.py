@@ -67,7 +67,7 @@ for x in range(alomatlar_soni):             # har bir Feature uchun
 featurening_vazni = dict()
 for x in sinflararo_uxshashlik.keys():
     featurening_vazni[x] = sinflararo_uxshashlik[x] * sinflararo_farq[x]
-    #print(featurening_vazni[x])
+    # print(featurening_vazni[x])
 
 
 ####################################################
@@ -85,6 +85,13 @@ for obj_key in range(obyektlar_soni):     # HAR BIR OBJECT UCHUN
         # print(feature_key, RS)
         # print(obj_key, feature_key, intervaldagi_vakillar[obj_key][feature_key][0] / k1_quvvat - intervaldagi_vakillar[obj_key][feature_key][1] / k2_quvvat)
     obyektning_umulashgan_bahosi[obj_key] = RS
+
+# print("####")
+# for el in intervaldagi_vakillar.items():
+#     print(el)
+#     break
+# print("####")
+# print("####")
 
 
 # I-Kriteriyga tushuramiz, ya'ni RS'ni 2-ta intervalga bo'lamiz
