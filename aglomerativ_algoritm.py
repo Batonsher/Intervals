@@ -103,7 +103,9 @@ for x in sinflararo_uxshashlik.keys():
 ####################################################
 #     АГЛОМЕРАТИВ АЛГОРИТМ  (Батон версия)  ########
 ####################################################
-
+print("ALOMATLAR VAZNI")
+for item in featurening_vazni.items():
+    print(item)
 fv = featurening_vazni.copy()
 
 # Шаг 1. P={i | xi∈X(n)\Z }. mikdor=0.
@@ -120,7 +122,8 @@ for y in range(1000):
     fv.pop(u)
 
     kupayuvchi_alomatlar_tuplami = {u}
-    # print(kamayuvchi_alomatlar_tuplami, kupayuvchi_alomatlar_tuplami)
+    print("P, TYPLAM")
+    print(kamayuvchi_alomatlar_tuplami, kupayuvchi_alomatlar_tuplami)
 
     # Цикл по t∊{1,…,h} R(St) = ηu(atu). Конец цикла; cr1=10. P=P\{u}.
     RS = functions.bittalik_rs(
