@@ -104,17 +104,23 @@ for x in sinflararo_uxshashlik.keys():
 #     АГЛОМЕРАТИВ АЛГОРИТМ  (Батон версия)  ########
 ####################################################
 
+fv = featurening_vazni.copy()
+
 # Шаг 1. P={i | xi∈X(n)\Z }. mikdor=0.
 # P      => kamayuvchi_alomatlar_tuplami.
 # TYPLAM => kupayuvchi_alomatlar_tuplami
 # mikdor => len(kupayuvchi_alomatlar_tuplami)
 kamayuvchi_alomatlar_tuplami = set(range(alomatlar_soni))
+RSLAR = dict()
 
-for _ in range(100):
+for y in range(1000):
     # Шаг 2. Вычислить crit=10. u=arg max wj. TYPLAM={u}.   mikdor= mikdor+1.
     umumiy_mezon = float('inf')
-    u = max(featurening_vazni, key=featurening_vazni.get)
+    u = max(fv, key=fv.get)  # MANASHU JOY YEDIRYAPTI\
+    fv.pop(u)
+
     kupayuvchi_alomatlar_tuplami = {u}
+    # print(kamayuvchi_alomatlar_tuplami, kupayuvchi_alomatlar_tuplami)
 
     # Цикл по t∊{1,…,h} R(St) = ηu(atu). Конец цикла; cr1=10. P=P\{u}.
     RS = functions.bittalik_rs(
@@ -127,8 +133,8 @@ for _ in range(100):
     # print(kamayuvchi_alomatlar_tuplami, kupayuvchi_alomatlar_tuplami,
     #       u, umumiy_mezon, tmp_mezon, RS, sep='\n\n')
 
-    for _ in range(100):
-        # Шаг 3.
+    # Шаг 3.
+    for x in range(1000):
         # Цикл по u ∊P.
         # Цикл по t∊{1,…,h}  bt=  R(St) +  ηu(atu). Конец цикла;
         #  ;	 ;	θ=0;	γ=0
@@ -139,11 +145,11 @@ for _ in range(100):
         for candidate_feature in kamayuvchi_alomatlar_tuplami:  # Цикл по u ∊P.
             for obj_key in range(obyektlar_soni):       # Цикл по t∊{1,…,h}
                 tmp_RS = functions.bittalik_rs(         # bt=  R(St) +  ηu(atu).
-                                   obyektlar_soni, {candidate_feature},
-                                   intervaldagi_vakillar,
-                                   k1_quvvat, k2_quvvat)
+                    obyektlar_soni, {candidate_feature},
+                    intervaldagi_vakillar,
+                    k1_quvvat, k2_quvvat)
 
-            mat_kutilish1 = mat_kutilish2 = 0 #  ;	 ;	θ=0;	γ=0
+            mat_kutilish1 = mat_kutilish2 = 0  # M1=...; M2=...	 ;	θ=0;	γ=0
             for obj_key in range(obyektlar_soni):
                 if target[obj_key] == 1:
                     mat_kutilish1 += RS[obj_key] + tmp_RS[obj_key]
@@ -177,28 +183,44 @@ for _ in range(100):
             tmp_mezon = float('inf')
             kamayuvchi_alomatlar_tuplami.discard(found_candidate_feature)
             kupayuvchi_alomatlar_tuplami.add(found_candidate_feature)
+            ###
+            fv.pop(found_candidate_feature)
             # Цикл по t ∊{1,…,h}  R(St)= R(St) + ηq(atq).   Конец цикла;
             tmp_RS = functions.bittalik_rs(
-                               obyektlar_soni, {found_candidate_feature},
-                               intervaldagi_vakillar,
-                               k1_quvvat, k2_quvvat)
+                obyektlar_soni, {found_candidate_feature},
+                intervaldagi_vakillar,
+                k1_quvvat, k2_quvvat)
             for obj_key in range(obyektlar_soni):
                 RS[obj_key] += tmp_RS[obj_key]
 
-            continue
+            # continue
         else:
-            print('BREAK#1:', kupayuvchi_alomatlar_tuplami, "\n\n", RS)
+            print(f'{y}-Guruh Shakillandi: {len(kupayuvchi_alomatlar_tuplami)}',
+                  kupayuvchi_alomatlar_tuplami, "\n\n")  # , RS)
+            RSLAR[y] = RS.copy()
             break
+        # if not fv:
+        #     print("FV tugadi1")
+        #     print('BREAK#1:', kupayuvchi_alomatlar_tuplami, "\n\n")  # , RS)
+        #     break
     else:
         print("XATOLIK Bo'lishi mumkin. tekshir")
 
     # Шаг 5. Если   |P|≥2, то идти 2; Иначе вывод  mikdor.
     if len(kamayuvchi_alomatlar_tuplami) >= 2:
+        # print("if len(kamayuvchi_alomatlar_tuplami) >= 2:", kamayuvchi_alomatlar_tuplami)
         continue
     else:
         print("BREAK#2: ", len(kupayuvchi_alomatlar_tuplami))
+
+    if not fv:
+        print("FV tugadi2")
+        break
 else:
     print("XATOLIK2 Bo'lishi mumkin.")
 
 # Шаг 6. Конец.
 print("# Шаг 6. Конец.")
+
+for el in RSLAR.items():
+    print(el)
