@@ -227,3 +227,10 @@ print("# Шаг 6. Конец.")
 
 for el in RSLAR.items():
     print(el)
+
+##  Topilgan RSlarni alohida faylga saqlab olish
+import json
+with open(f"out_data\\{tanlanma_nomi}\\guruhlangan_rslar.json", 'w') as json_file:
+    json.dump(RSLAR, json_file)
+
+# ID RS-val label

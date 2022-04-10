@@ -1,4 +1,7 @@
 def criteria1(ustun, k1_quvvat, k2_quvvat):
+    """
+    ustun => [(ID, RS-val, label), .... ]
+    """
     ustun = sorted(ustun, key=lambda x: x[1])
     # ustun = [ (DF t/r, RS qiymati, sinf), ... ]
 
@@ -139,3 +142,7 @@ def bittalik_rs(obyektlar_soni, featuralar_soni, intervaldagi_vakillar, K1, K2):
     return obyektning_umulashgan_bahosi
 
 
+def start_file(path):
+    import os
+    cmd = f"start {path}"
+    os.system(cmd)
