@@ -26,6 +26,109 @@ for x, row in enumerate(DF2):
     if x in DF3['ids']:
         DF3[x] = row.copy()
 
-for item in DF3.items():
-    print(item)
-print(len(DF3))
+with open(f"out_data\\{tanlanma_nomi}\\kesilgan_objects.csv", 'w') as outfile:
+    for a in DF3['ids']:
+
+        s = [str(x) for x in DF3[a]]
+        s = ' '.join(s)
+        # print(obj_no, s)
+        outfile.write(str(a) + " " + s + '\n')
+
+# Мера близости между парой номинальных признаков xi, xj на E0 вычисляется как
+alomatlarning_yaqinlik_mezoni = []
+for x in range(alomatlar_soni):
+    alomatlarning_yaqinlik_mezoni.append([0]*alomatlar_soni)
+
+for a in DF3['ids']:
+    # obj_no = 62
+    for b in DF3['ids']:
+        obj1 = DF3[a]
+        obj2 = DF3[b]
+
+        # for Xai, Xbi in zip(obj1, obj2):
+        #     print(f"Xai {Xai}, Xbi {Xbi}")
+        # print(a, obj1)
+        # print(b, obj2)
+
+        if target[a] == target[b]:
+            continue
+
+        for i in range(len(obj1)):
+            for j in range(len(obj1)):
+                if obj1[i] != obj2[i] and obj1[j] != obj2[j]:
+                    g = 2
+                elif obj1[i] == obj2[i] or obj1[j] == obj2[j]:   # SO'RASH KERAK. MANTIQ QAYERDA???
+                    g = 1
+                elif obj1[i] == obj2[i] and obj1[j] == obj2[j]:
+                    print('ishladi')
+                    g = 0
+                else:
+                    # print(obj1[i] == obj2[i], obj1[j] == obj2[j])
+                    # print("XATOLIK OOV")
+                    g = 1
+
+                if i != j:
+                    alomatlarning_yaqinlik_mezoni[i][j] += g
+                else:
+                    alomatlarning_yaqinlik_mezoni[i][j] += 0
+
+        # for x in range(len(obj1)):
+        #     print(f"Xai {obj1[x]}, Xbi {obj2[x]}")
+
+    break
+
+kesilgan_k1_quvvat = kesilgan_k2_quvvat = 0
+for obj_no in DF3['ids']:
+    if target[obj_no] == 1:
+        kesilgan_k1_quvvat += 1
+    else:
+        kesilgan_k2_quvvat += 1
+
+kesilgan_mahraj = kesilgan_k1_quvvat * (len(DF3['ids']) - kesilgan_k1_quvvat) + \
+                  kesilgan_k2_quvvat * (len(DF3['ids']) - kesilgan_k2_quvvat)
+kesilgan_mahraj *= 2
+
+for x in range(alomatlar_soni):
+    for y in range(alomatlar_soni):
+        alomatlarning_yaqinlik_mezoni[x][y] /= kesilgan_mahraj
+
+for row in alomatlarning_yaqinlik_mezoni:
+    print(row)
+
+def logger(matrix, logfile):
+    for row in matrix:
+        s = [str(x) for x in row]
+        s = ' '.join(s)
+        logfile.write(s + '\n')
+    logfile.write("#"*30 + '\n')
+
+
+with open(f"out_data\\{tanlanma_nomi}\\log.txt", 'w') as log:
+
+
+    # max qaydasan
+    ignorelist = set()
+    tartiblangan_juftalomatlar = []
+    while len(ignorelist) < len(alomatlarning_yaqinlik_mezoni):
+        maxq = float('-inf')
+        maxi = (-1, -1)
+        for x, row in enumerate(alomatlarning_yaqinlik_mezoni):
+            for y, el in enumerate(row):
+                if el > maxq and x not in ignorelist and y not in ignorelist:
+                    maxq = el
+                    maxi = (x, y)
+
+        tartiblangan_juftalomatlar.append(maxi)
+        ignorelist.add(maxi[0])
+        ignorelist.add(maxi[1])
+        log.write(f"ignorelist: {ignorelist}\n")
+        log.write(f"maxq: {maxq}\tmax: {maxi}\n")
+        alomatlarning_yaqinlik_mezoni[maxi[0]] = [0] * len(alomatlarning_yaqinlik_mezoni)
+        alomatlarning_yaqinlik_mezoni[maxi[1]] = [0] * len(alomatlarning_yaqinlik_mezoni)
+        logger(alomatlarning_yaqinlik_mezoni, log)
+
+        s = [str(x) for x in tartiblangan_juftalomatlar]
+        s = ' '.join(s)
+        log.write("Juftliklar" + s + '\n')
+
+    print("Juft:", tartiblangan_juftalomatlar)
