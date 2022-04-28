@@ -124,17 +124,17 @@ def yangi_df(fullpath):
         pass
 
 
-def bittalik_rs(obyektlar_soni, featuralar_soni, intervaldagi_vakillar, K1, K2):
+def bittalik_rs(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2):
     """
     umumlashgan baxo
     :return:
     """
-    if type(featuralar_soni) == type(1): featuralar_soni = range(featuralar_soni)
+    if type(alomatlar_tuplami) == type(1): alomatlar_tuplami = range(alomatlar_tuplami)
 
     obyektning_umulashgan_bahosi = dict()
     for obj_key in range(obyektlar_soni):
         RS = 0
-        for feature_key in featuralar_soni:
+        for feature_key in alomatlar_tuplami:
             RS += (intervaldagi_vakillar[obj_key][feature_key][0] / K1 -
                    intervaldagi_vakillar[obj_key][feature_key][1] / K2)
 

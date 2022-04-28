@@ -55,17 +55,11 @@ for a in DF3['ids']:
 
         for i in range(len(obj1)):
             for j in range(len(obj1)):
-                if obj1[i] != obj2[i] and obj1[j] != obj2[j]:
-                    g = 2
-                elif obj1[i] == obj2[i] or obj1[j] == obj2[j]:   # SO'RASH KERAK. MANTIQ QAYERDA???
-                    g = 1
-                elif obj1[i] == obj2[i] and obj1[j] == obj2[j]:
-                    print('ishladi')
-                    g = 0
-                else:
-                    # print(obj1[i] == obj2[i], obj1[j] == obj2[j])
-                    # print("XATOLIK OOV")
-                    g = 1
+                g = 0
+                if obj1[i] != obj2[i]:
+                    g += 1
+                if obj1[j] != obj2[j]:
+                    g += 1
 
                 if i != j:
                     alomatlarning_yaqinlik_mezoni[i][j] += g
@@ -75,7 +69,7 @@ for a in DF3['ids']:
         # for x in range(len(obj1)):
         #     print(f"Xai {obj1[x]}, Xbi {obj2[x]}")
 
-    break
+    # break
 
 kesilgan_k1_quvvat = kesilgan_k2_quvvat = 0
 for obj_no in DF3['ids']:
@@ -93,7 +87,9 @@ for x in range(alomatlar_soni):
         alomatlarning_yaqinlik_mezoni[x][y] /= kesilgan_mahraj
 
 for row in alomatlarning_yaqinlik_mezoni:
-    print(row)
+    for el in row:
+        print(f"{el:1.2f} ", end="")
+    print()
 
 def logger(matrix, logfile):
     for row in matrix:
