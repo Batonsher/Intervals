@@ -70,8 +70,8 @@ for x in range(alomatlar_soni):             # har bir Feature uchun
 alomatlar_tuplami = [x[0] for x in tartiblangan_alomatlar_turgunligi[::2]]
 
 # print(alomatlar_tuplami)
-RS = functions.bittalik_rs(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2)
-ustun = [(item[0], item[1], target[item[0]]) for item in RS.items()]
+RS_toq = functions.bittalik_rs(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2)
+ustun = [(item[0], item[1], target[item[0]]) for item in RS_toq.items()]
 
 v = functions.criteria1(ustun, K1, K2)
 print(f"Criteria 1 qiymati = {v[0]:2.2f}, chegaraviy obyekt = {v[1]}")
@@ -81,9 +81,36 @@ print(f"Criteria 1 qiymati = {v[0]:2.2f}, chegaraviy obyekt = {v[1]}")
 alomatlar_tuplami = [x[0] for x in tartiblangan_alomatlar_turgunligi[1::2]]
 
 # print(alomatlar_tuplami)
-RS = functions.bittalik_rs(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2)
-ustun = [(item[0], item[1], target[item[0]]) for item in RS.items()]
+RS_juft = functions.bittalik_rs(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2)
+ustun = [(item[0], item[1], target[item[0]]) for item in RS_juft.items()]
 
 v = functions.criteria1(ustun, K1, K2)
 print(f"Criteria 1 qiymati = {v[0]:2.2f}, chegaraviy obyekt = {v[1]}")
 
+
+# RASMINI CHIZAMIZ
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots(figsize=(20, 10))
+
+marker = 'x*ov^'
+for class_label in set(target):
+
+    # for group_key in RSLAR.keys():
+    x_lar = []
+    y_lar = []
+    id_lar = []
+    for object_id in RS_toq.keys():
+        if target[object_id] == class_label:
+            x_lar.append(RS_toq[object_id])
+            y_lar.append(RS_juft[object_id])
+            id_lar.append(object_id)
+
+    ax.scatter(x_lar, y_lar, s=75, marker=marker[class_label], label=str(class_label))
+
+    for n, txt in enumerate(id_lar):
+        ax.annotate(txt, (x_lar[n], y_lar[n]))
+
+ax.legend()
+
+fig.savefig(f"out_data\\{tanlanma_nomi}\\fig2.pdf")
+functions.start_file(f"out_data\\{tanlanma_nomi}\\fig2.pdf")
