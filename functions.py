@@ -146,3 +146,26 @@ def start_file(path):
     import os
     cmd = f"start {path}"
     os.system(cmd)
+
+
+def mprint(collection, intend=''):
+    if type(collection) in (list, tuple):
+        for element in collection:
+            if type(element) in (list, tuple, set, dict):
+                mprint(element, intend+"    ")
+            else:
+                print(f"{intend}{element}")
+    elif type(collection) == dict:
+        for element in collection.items():
+            if type(element) in (list, tuple, set, dict):
+                mprint(element, intend+"    ")
+            else:
+                print(f"{intend}{element[0]}:{element[1]}")
+    elif type(collection) == set:
+        for element in collection:
+            print(element, end=' ')
+        print()
+
+    else:
+        print(f"FAIL: is not collection {type(collection)}\n{collection}")
+
