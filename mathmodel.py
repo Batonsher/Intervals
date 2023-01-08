@@ -1,8 +1,8 @@
 """ :: Asosiy class :: """
-import re
+import re, copy
 import metric
-import os
-import datetime
+import os, datetime
+import matplotlib.pyplot as plt
 
 
 def start_file(path):
@@ -23,15 +23,17 @@ class Bahriddin:
                                     "intervaldagi elementlar soni, f1(i)\n"
     feature_weight      dict:       featurening_vazni
     generalized_estimate dict:      har bir obyektning umulashgan baholari. RS
+    nominal_features_set set:       nominal ustunlarning to'plami.
+                                    (#) {0,5,9}-aynan shu alomatlar. None->Hammasi miqdoriy
     """
 
     ################################################################################
     def __init__(self, df_name="Tanlanma nomi",
                  path2df="Path to Objects.csv and Target.csv folder",
-                 *, path2out="", metric=(1, 2, None)):
+                 *, path2out="", metric=(1, 2, None),
+                 nominal_features_set=False, binar=False):
         # region SETTINGS
         self.epsilon = 10**-9
-
         # endregion
 
         # region DF location
@@ -46,10 +48,16 @@ class Bahriddin:
             self.df_name = df_name
             self.path2df = f"init_data\\{df_name}\\"
 
+        self.create_folders()
         self.path2out = path2out if path2out else "out_data\\"
 
-        # Create out_data folder
-        self.create_folders()
+        self.nominal_features_set = nominal_features_set if nominal_features_set else {}
+        # if not nominal_features_set:
+        #     self.nominal_features_set = {}
+        # elif nominal_features_set is True:
+        #     self.nominal_features_set = set(range(self.n))
+        # else:
+        #     self.nominal_features_set
         # endregion
 
         # region Load DATA
@@ -64,6 +72,7 @@ class Bahriddin:
 
         self.load_data()
         self.current_df = self.original_df[:]
+        self.binar = binar
         # endregion
 
         # region Metric settings
@@ -99,6 +108,11 @@ class Bahriddin:
         self.class_names = list(set(target))
         for class_name in self.class_names:
             self.class_power[class_name] = target.count(class_name)
+
+        if self.nominal_features_set == True:
+            self.nominal_features_set = list(range(self.m))
+        elif self.nominal_features_set == False:
+            self.nominal_features_set = {}
         # endregion
 
     ################################################################################
@@ -137,6 +151,7 @@ class Bahriddin:
         """Tegishlilik funk"""
         a = self.eta_finder(target)
 
+        # TODO: for more classes
         return a[0] / (a[0] + a[1])
 
     ################################################################################
@@ -199,6 +214,46 @@ class Bahriddin:
                 G += (1 - interval[4]) * interval[3]
         G /= self.m
         return G
+
+    ################################################################################
+    def create_intervals(self, df):
+        """ DF`ni nominallashtiradi.
+                agar nominal_features_set berilgan bolsa,
+                    ko'rsatilgan alomatlar uchun nominal qoidalar bajariladi
+        """
+        # import pickle
+
+        if not df: df = copy.deepcopy(self.original_df)
+
+        time = str(datetime.datetime.now())[:20].replace(":", "..")
+        with open(f"out_data\\{self.df_name}\\LOG.nominalizer{time}.txt", 'w') as logfile:
+            pickle_dict = dict()
+            turgun = []
+            for c in range(self.n):
+                logfile.write(
+                    f"\n\n{c}-alomat {'nominal' if c in self.nominal_features_set else 'miqdoriy'}: "
+                    f"\nMezon 2, -dan (kiradi), -gacha (kirmaydi), "
+                    f"intervaldagi elementlar soni, f1(i), ["
+                    f"ids]\n")
+                ustun = [x[c] for x in df]
+
+                if c in self.nominal_features_set:
+                    intervals = self.nominal_interval_maker(ustun, self.target)
+                else:
+                    intervals = self.interval_maker(ustun, self.target)
+
+                intervals = sorted(intervals, key=lambda x: x[0])
+                [logfile.write(str(interval)) for interval in intervals]
+
+                pickle_dict[c] = intervals
+
+            logfile.write(f"\n\n{'#' * 20}\nAlomat turg'unligi:{sorted(turgun, reverse=True)}")
+
+        # with open(f"out_data\\{self.df_name}\\intervals.baton", 'wb') as outfile:
+        #     pickle.dump(pickle_dict, outfile)
+
+        self.intervals = pickle_dict
+        pass
 
     ################################################################################
     def interval_maker(self, feature_col, target, result=None, indexlar=None, unsorted_indexlar=None):
@@ -268,76 +323,61 @@ class Bahriddin:
         feature_col, target, unsorted_indexlar = [list(tuple) for tuple in zip(*sorted_pairs)]
 
         cur_val = feature_col[0]
-        for chegara, qiymat in enumerate(feature_col):
-            if qiymat != cur_val or chegara == len(feature_col)-1:
+        c = float('inf')
+        for chegara in range(1, len(target)+1):
+            # print('$$', chegara, feature_col, target)
+            if chegara == len(feature_col) or feature_col[chegara] != cur_val:
 
                 u = indexlar[0]
                 v = indexlar[chegara] if chegara < len(target) else indexlar[chegara - 1] + 1
 
                 eta = self.eta_finder(target[:chegara])
-
+                # print(f"#{target}\t{target[:chegara]}")
                 javob = (abs(eta[0] - eta[1]), u, v, v-u,
                          self.membership_func(target[:chegara]), unsorted_indexlar[:chegara])
                 result.append(javob)
 
-                if target[chegara:]:
-                    result = self.nominal_interval_maker(feature_col[chegara:],
-                            target[chegara:], result,
-                            indexlar[chegara:], unsorted_indexlar[chegara:])
+                # print("$$$$\t ", javob, target[chegara:])
+                c = chegara
+                break
+        if target[c:]:
+            result = self.nominal_interval_maker(feature_col[c:],
+                     target[c:], result,
+                     indexlar[c:], unsorted_indexlar[c:])
 
         return result
 
     ################################################################################
-    def nominalizer(self, nominal_features_set=None):
-        import pickle
+    def nominalizer(self):
+        """ DF`ni nominallashtiradi.
+        agar nominal_features_set berilgan bolsa,
+            ko'rsatilgan alomatlar uchun nominal qoidalar bajariladi
+        """
 
-        time = str(datetime.datetime.now())[:20].replace(":", "..")
-        with open(f"out_data\\{self.df_name}\\LOG.nominalizer{time}.txt", 'w') as logfile:
+        DF2 = copy.deepcopy(self.original_df)
+        self.create_intervals(DF2)
+        intervals = copy.deepcopy(self.intervals)
 
-            DF2 = self.original_df.copy()
-            pickle_dict = dict()
-            turgun = []
-            for c in range(self.n):
-                logfile.write(
-                    f"\n\n{c}-alomat: \nMezon 2, -dan (kiradi), -gacha (kirmaydi), "
-                    f"intervaldagi elementlar soni, f1(i)\n")
-                ustun = [x[c] for x in DF2]
-                intervals = self.interval_maker(ustun, self.target)
-
-                intervals = sorted(intervals, key=lambda x: x[0])
-
-                pickle_dict[c] = intervals
-
-                for x, interval in enumerate(intervals):
-                    for ind in interval[5]:
-                        DF2[ind][c] = x
-
-                [logfile.write(str(interval)) for interval in intervals]
-
-                G = self.gini_function(intervals)
-                turgun.append(G)
-            logfile.write(f"{'#'*20}\nAlomat turg'unligi:{sorted(turgun, reverse=True)}")
-            # print("Alomat turg'unligi:", sorted(turgun, reverse=True))
-            # print(len(turgun))
+        for c in range(self.n):
+            for x, interval in enumerate(intervals[c]):
+                for ind in interval[5]:
+                    DF2[ind][c] = x
 
         with open(f"init_data\\{self.df_name}\\ObjectsNominal.csv", 'w') as outfile:
             for row in DF2:
                 a = ' '.join(map(str, row))
                 outfile.write(a + '\n')
 
-        with open(f"out_data\\{self.df_name}\\intervals.baton", 'wb') as outfile:
-            pickle.dump(pickle_dict, outfile)
-
         self.df_nominal = DF2
-        self.intervals = pickle_dict
 
     ################################################################################
     def binanizer(self):
         import copy
 
-        db = self.intervals
-
         new_df = copy.deepcopy(self.df_nominal)
+        self.create_intervals(new_df)
+        db = copy.deepcopy(self.intervals)
+        # db = self.intervals
         # target = self.target
 
         for feature_no in range(self.n):
@@ -387,6 +427,11 @@ class Bahriddin:
             featurening_sinflararo_uxshashligi = 0
             farq_summa = 0
             uxshash_summa = 0
+            #
+            # print('#################')
+            # for item in db.items():
+            #     print(item)
+
             for interval in db[x]:  # har bir interval uchun
                 k1_vakillari = k2_vakillari = 0
                 # print(interval)
@@ -428,6 +473,7 @@ class Bahriddin:
         for obj_key in range(obyektlar_soni):  # HAR BIR OBJECT UCHUN
             RS = 0
             for feature_key in range(alomatlar_soni):
+                # print(intervaldagi_vakillar[obj_key][feature_key])
                 RS += featurening_vazni[feature_key] * \
                       (intervaldagi_vakillar[obj_key][feature_key][0] \
                        / k1_quvvat - intervaldagi_vakillar[obj_key][feature_key][1] / k2_quvvat)
@@ -435,6 +481,135 @@ class Bahriddin:
             obyektning_umulashgan_bahosi[obj_key] = RS
 
         self.generalized_estimate = obyektning_umulashgan_bahosi
+
+    ################################################################################
+    def generalized_estimate_func2(self, features_set=None):
+        """ Umumlashgan baxoni topuvchifunksiya
+
+        :param features_set: Agar berilgan bo'lsa faqat o'shalar uchun topiladi
+        :return: vektor size m.
+        """
+
+        if features_set is None: features_set = set(range(self.n))
+        # print(f"{features_set} Ustunlar uchun:")
+
+        db = self.intervals
+        target = copy.deepcopy(self.target[:])
+
+        k1_quvvat = target.count(self.class_names[0])
+        k2_quvvat = sum(self.class_power.values()) - k1_quvvat
+
+        obyektlar_soni = self.m
+        alomatlar_soni = self.n
+
+        #########################################################
+        #    UXSHASHLIK va FARQ                                ##
+        #########################################################
+
+        sinflararo_farq = dict()
+        sinflararo_uxshashlik = dict()
+
+        # intervaldagi_vakillar = {x: {} for x in range(obyektlar_soni)}
+        intervaldagi_vakillar = dict()
+        for obj_key in range(obyektlar_soni):
+            for feature_key in features_set:
+                intervaldagi_vakillar[obj_key] = {feature_key: 0}
+
+        for x in features_set:  # har bir Feature uchun
+            featurening_sinflararo_farqi = 1
+            featurening_sinflararo_uxshashligi = 0
+            farq_summa = 0
+            uxshash_summa = 0
+            #
+            # print('#################')
+            # for item in db.items():
+            #     print(item)
+
+            for interval in db[x]:  # har bir interval uchun
+                k1_vakillari = k2_vakillari = 0
+                # print(interval)
+                for ind in interval[5]:  # feature'ning intervalidagi  har bir index uchun
+                    if target[ind] == self.class_names[0]:
+                        k1_vakillari += 1
+                    else:
+                        k2_vakillari += 1
+
+                # print(k1_vakillari, k2_vakillari)
+                farq_summa += k1_vakillari * k2_vakillari
+                uxshash_summa += k1_vakillari * (k1_vakillari - 1) + k2_vakillari * (k2_vakillari - 1)
+
+                # print(x, interval)#, intervaldagi_vakillar[x])
+                for ind in interval[5]:
+                    intervaldagi_vakillar[ind][x] = (k1_vakillari, k2_vakillari)
+                    # print(ind, intervaldagi_vakillar[ind])
+                # print(interval[], intervaldagi_vakillar[x])
+
+            featurening_sinflararo_farqi -= farq_summa / (k1_quvvat * k2_quvvat)
+            featurening_sinflararo_uxshashligi = uxshash_summa / (
+                    k1_quvvat ** 2 - k1_quvvat + k2_quvvat ** 2 - k2_quvvat)
+
+            sinflararo_farq[x] = featurening_sinflararo_farqi
+            sinflararo_uxshashlik[x] = featurening_sinflararo_uxshashligi
+            # print(f"{x} ustunning sinflararo farqi={featurening_sinflararo_farqi}, uxshash{featurening_sinflararo_uxshashligi}")
+
+        # VAZN
+        featurening_vazni = dict()
+        for x in sinflararo_uxshashlik.keys():
+            featurening_vazni[x] = sinflararo_uxshashlik[x] * sinflararo_farq[x]
+            # print(featurening_vazni[x])
+
+        self.feature_weight = featurening_vazni
+        ####################################################
+        #     OBYEKTNING UMUMLASHGAN BAHOSI    #############
+        ####################################################
+
+        obyektning_umulashgan_bahosi = dict()
+        for obj_key in range(obyektlar_soni):  # HAR BIR OBJECT UCHUN
+            RS = 0
+            for feature_key in features_set:
+                # print(intervaldagi_vakillar[obj_key][feature_key])
+                RS += featurening_vazni[feature_key] * \
+                      (intervaldagi_vakillar[obj_key][feature_key][0] \
+                       / k1_quvvat - intervaldagi_vakillar[obj_key][feature_key][1] / k2_quvvat)
+
+            obyektning_umulashgan_bahosi[obj_key] = RS
+
+        self.generalized_estimate = obyektning_umulashgan_bahosi
+        return obyektning_umulashgan_bahosi
+
+    def scatter(self, feature1, feature2):
+        """RASMINI CHIZAMIZ
+        feature1, feature2      dict:   size m.
+        """
+
+        fig, ax = plt.subplots(figsize=(20, 10))
+
+        ids = feature1.keys() if type(feature1) == dict else range(len(feature1))
+
+        marker = 'x^ov'
+        for class_label in self.class_names:
+
+            x_lar = []
+            y_lar = []
+            id_lar = []
+            for object_id in ids:
+                if self.target[object_id] == class_label:
+                    x_lar.append(feature1[object_id])
+                    y_lar.append(feature2[object_id])
+                    id_lar.append(object_id)
+
+            ax.scatter(x_lar, y_lar, s=250, marker=marker[int(class_label)], label=str(class_label))
+
+            for n, txt in enumerate(id_lar):
+                ax.annotate(txt, (x_lar[n], y_lar[n]))
+
+        ax.legend()
+
+        # time = str(datetime.datetime.now())[:20].replace(":", "..")
+        time = str(datetime.datetime.now())[:10]
+
+        fig.savefig(f"out_data\\{self.df_name}\\fig{time}.pdf")
+        start_file(f"out_data\\{self.df_name}\\fig{time}.pdf")
 
     # region Self service
     def print_df(self):
@@ -476,9 +651,11 @@ class Bahriddin:
 
     ################################################################################
     def run(self):
+        # if features_set is None: features_set = set(range(self.n))
         self.nominalizer()
         self.binanizer()
-        self.generalized_estimate_func()
+
+        self.generalized_estimate_func2()
         pass
 
     ################################################################################
