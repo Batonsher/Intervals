@@ -7,7 +7,7 @@ with open(f"out_data\\{tanlanma_nomi}\\intervals.baton", 'rb') as baton_file:
 
 DF = []
 target = []
-with open(f"out_data\\{tanlanma_nomi}\\Objects.csv") as in_file:
+with open(f"out_data\\{tanlanma_nomi}\\binar_Objects.csv") as in_file:
     for line in in_file:
 
         row = [int(x) for x in line.split()[:-1]]
@@ -69,7 +69,6 @@ for x in sinflararo_uxshashlik.keys():
     featurening_vazni[x] = sinflararo_uxshashlik[x] * sinflararo_farq[x]
     # print(featurening_vazni[x])
 
-
 ####################################################
 #     OBYEKTNING UMUMLASHGAN BAHOSI    #############
 ####################################################
@@ -105,5 +104,6 @@ a = functions.criteria1(RS, k1_quvvat, k2_quvvat)
 # print(f"1-kriteriya qiymati: {a[0]:2.2f}; chegara:[0:{a[1]-1}]({a[1]-1}:{len(RS)})")  # BATON
 print(f"1-kriteriya qiymati: {a[0]:2.2f}; chegara:[0:{a[1]})[{a[1]}:{len(RS)})")        # _A_
 print("t/r: DF:t/r, RS-qiymat, sinf")
+RS_list = []
 for x, el in enumerate(a[2]):
     print(f"{x+1}: {el}")

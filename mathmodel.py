@@ -1,5 +1,5 @@
 """ :: Asosiy class :: """
-import re, copy
+import re, copy, pickle
 import metric
 import os, datetime
 import matplotlib.pyplot as plt
@@ -225,8 +225,8 @@ class Bahriddin:
 
         if not df: df = copy.deepcopy(self.original_df)
 
-        time = str(datetime.datetime.now())[:20].replace(":", "..")
-        with open(f"out_data\\{self.df_name}\\LOG.nominalizer{time}.txt", 'w') as logfile:
+        time = str(datetime.datetime.now())[:10]
+        with open(f"out_data\\{self.df_name}\\{time}LOG.nominalizer.txt", 'w') as logfile:
             pickle_dict = dict()
             turgun = []
             for c in range(self.n):
@@ -249,8 +249,8 @@ class Bahriddin:
 
             logfile.write(f"\n\n{'#' * 20}\nAlomat turg'unligi:{sorted(turgun, reverse=True)}")
 
-        # with open(f"out_data\\{self.df_name}\\intervals.baton", 'wb') as outfile:
-        #     pickle.dump(pickle_dict, outfile)
+        with open(f"out_data\\{self.df_name}\\intervals.baton", 'wb') as outfile:
+            pickle.dump(pickle_dict, outfile)
 
         self.intervals = pickle_dict
         pass
@@ -608,8 +608,8 @@ class Bahriddin:
         # time = str(datetime.datetime.now())[:20].replace(":", "..")
         time = str(datetime.datetime.now())[:10]
 
-        fig.savefig(f"out_data\\{self.df_name}\\fig{time}.pdf")
-        start_file(f"out_data\\{self.df_name}\\fig{time}.pdf")
+        fig.savefig(f"out_data\\{self.df_name}\\{time}fig.pdf")
+        start_file(f"out_data\\{self.df_name}\\{time}fig.pdf")
 
     # region Self service
     def print_df(self):
@@ -653,7 +653,7 @@ class Bahriddin:
     def run(self):
         # if features_set is None: features_set = set(range(self.n))
         self.nominalizer()
-        self.binanizer()
+        # self.binanizer()
 
         self.generalized_estimate_func2()
         pass

@@ -67,48 +67,48 @@ for x in range(alomatlar_soni):             # har bir Feature uchun
             # print(ind, intervaldagi_vakillar[ind])
         # print(interval[], intervaldagi_vakillar[x])
 
-#  tartiblangan_alomatlar_turgunligi `ni BIRINCHI 6tasi uchun alohida RS top
+#  tartiblangan_alomatlar_turgunligi `ni BIRINCHI 8tasi uchun alohida RS top
 # print(tartiblangan_alomatlar_turgunligi[::2])
-alomatlar_tuplami = [x[0] for x in tartiblangan_alomatlar_turgunligi[:6]]
+alomatlar_tuplami = [x[0] for x in tartiblangan_alomatlar_turgunligi[:8]]
 
 # print(alomatlar_tuplami)
 RS1 = functions.bittalik_rs(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2)
 ustun = [(item[0], item[1], target[item[0]]) for item in RS1.items()]
 v = functions.criteria1(ustun, K1, K2)
-print(f"Criteria 1 qiymati = {v[0]:2.2f}, chegaraviy obyekt = {v[1]}")
+#print(f"Criteria 1 qiymati = {v[0]:2.2f}, chegaraviy obyekt = {v[1]}")
 
 
-#  tartiblangan_alomatlar_turgunligi `ni IKKINCHI 6tasi uchun alohida RS top
+#  tartiblangan_alomatlar_turgunligi `ni IKKINCHI 8tasi uchun alohida RS top
 # print(tartiblangan_alomatlar_turgunligi[::2])
-alomatlar_tuplami = [x[0] for x in tartiblangan_alomatlar_turgunligi[6:12]]
+alomatlar_tuplami = [x[0] for x in tartiblangan_alomatlar_turgunligi[8:16]]
 
 # print(alomatlar_tuplami)
 RS2 = functions.bittalik_rs(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2)
 ustun = [(item[0], item[1], target[item[0]]) for item in RS2.items()]
 v = functions.criteria1(ustun, K1, K2)
-print(f"Criteria 1 qiymati = {v[0]:2.2f}, chegaraviy obyekt = {v[1]}")
+#print(f"Criteria 1 qiymati = {v[0]:2.2f}, chegaraviy obyekt = {v[1]}")
 
 
-#  tartiblangan_alomatlar_turgunligi `ni UCHUNCHI 6tasi uchun alohida RS top
+#  tartiblangan_alomatlar_turgunligi `ni UCHUNCHI 8tasi uchun alohida RS top
 # print(tartiblangan_alomatlar_turgunligi[::2])
-alomatlar_tuplami = [x[0] for x in tartiblangan_alomatlar_turgunligi[12:18]]
+alomatlar_tuplami = [x[0] for x in tartiblangan_alomatlar_turgunligi[16:]]
 
 # print(alomatlar_tuplami)
 RS3 = functions.bittalik_rs(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2)
 ustun = [(item[0], item[1], target[item[0]]) for item in RS3.items()]
 v = functions.criteria1(ustun, K1, K2)
-print(f"Criteria 1 qiymati = {v[0]:2.2f}, chegaraviy obyekt = {v[1]}")
+#print(f"Criteria 1 qiymati = {v[0]:2.2f}, chegaraviy obyekt = {v[1]}")
 
 
-#  tartiblangan_alomatlar_turgunligi `ni TO'RTINCHI 4tasi uchun alohida RS top
-# print(tartiblangan_alomatlar_turgunligi[::2])
-alomatlar_tuplami = [x[0] for x in tartiblangan_alomatlar_turgunligi[18:]]
-
-# print(alomatlar_tuplami)
-RS4 = functions.bittalik_rs(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2)
-ustun = [(item[0], item[1], target[item[0]]) for item in RS4.items()]
-v = functions.criteria1(ustun, K1, K2)
-print(f"Criteria 1 qiymati = {v[0]:2.2f}, chegaraviy obyekt = {v[1]}")
+# #  tartiblangan_alomatlar_turgunligi `ni TO'RTINCHI 4tasi uchun alohida RS top
+# # print(tartiblangan_alomatlar_turgunligi[::2])
+# alomatlar_tuplami = [x[0] for x in tartiblangan_alomatlar_turgunligi[18:]]
+#
+# # print(alomatlar_tuplami)
+# RS4 = functions.bittalik_rs(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2)
+# ustun = [(item[0], item[1], target[item[0]]) for item in RS4.items()]
+# v = functions.criteria1(ustun, K1, K2)
+# print(f"Criteria 1 qiymati = {v[0]:2.2f}, chegaraviy obyekt = {v[1]}")
 
 
 
@@ -119,9 +119,12 @@ from sklearn.manifold import TSNE
 RS1 = [RS1[key] for key in RS1.keys()]
 RS2 = [RS2[key] for key in RS2.keys()]
 RS3 = [RS3[key] for key in RS3.keys()]
-RS4 = [RS4[key] for key in RS4.keys()]
+# for i in range(len(RS1)):
+#     print(RS1[i], RS2[i], RS3[i])
+#RS4 = [RS4[key] for key in RS4.keys()]
 # print(type(RS4), RS4)
-X = np.array([RS1, RS2, RS3, RS4])
+X = np.array([RS1, RS2, RS3])
+# print(X)
 # print(X)
 X_embedded = TSNE(n_components=2,
                    init='random').fit_transform(X)
@@ -132,29 +135,29 @@ X_embedded = TSNE(n_components=2,
 #
 #
 # RASMINI CHIZAMIZ
-import matplotlib.pyplot as plt
-fig, ax = plt.subplots(figsize=(20, 10))
-
-marker = 'x*ov^'
-for class_label in set(target):
-
-    # for group_key in RSLAR.keys():
-    x_lar = []
-    y_lar = []
-    id_lar = []
-
-    for n in range(len(X[0])):  # object_id in RS1.keys():
-        if target[n] == class_label:
-            x_lar.append(X[0, n])
-            y_lar.append(X[1, n])
-            id_lar.append(n)
-    # print(x_lar, "\n\n\n", y_lar)
-    ax.scatter(x_lar, y_lar, s=75, marker=marker[class_label], label=str(class_label))
-
-    for x in range(len(x_lar)):
-        ax.annotate(x, (x_lar[x], y_lar[x]))
-
-ax.legend()
-
-fig.savefig(f"out_data\\{tanlanma_nomi}\\fig4x.pdf")
-functions.start_file(f"out_data\\{tanlanma_nomi}\\fig4x.pdf")
+# import matplotlib.pyplot as plt
+# fig, ax = plt.subplots(figsize=(20, 10))
+#
+# marker = 'x^ov'
+# for class_label in set(target):
+#
+#     # for group_key in RSLAR.keys():
+#     x_lar = []
+#     y_lar = []
+#     id_lar = []
+#
+#     for n in range(len(X[0])):  # object_id in RS1.keys():
+#         if target[n] == class_label:
+#             x_lar.append(X[0, n])
+#             y_lar.append(X[1, n])
+#             id_lar.append(n)
+#     # print(x_lar, "\n\n\n", y_lar)
+#     ax.scatter(x_lar, y_lar, s=250, marker=marker[class_label], label=str(class_label))
+#
+#     for x in range(len(x_lar)):
+#         ax.annotate(x, (x_lar[x], y_lar[x]))
+#
+# ax.legend()
+#
+# fig.savefig(f"out_data\\{tanlanma_nomi}\\fig3x.pdf")
+# functions.start_file(f"out_data\\{tanlanma_nomi}\\fig3x.pdf")

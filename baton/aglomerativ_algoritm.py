@@ -103,9 +103,6 @@ for x in sinflararo_uxshashlik.keys():
 ####################################################
 #     АГЛОМЕРАТИВ АЛГОРИТМ  (Батон версия)  ########
 ####################################################
-print("ALOMATLAR VAZNI")
-for item in featurening_vazni.items():
-    print(item)
 fv = featurening_vazni.copy()
 
 # Шаг 1. P={i | xi∈X(n)\Z }. mikdor=0.
@@ -225,8 +222,6 @@ else:
 # Шаг 6. Конец.
 print("# Шаг 6. Конец.")
 
-for el in RSLAR.items():
-    print(el)
 
 ##  Topilgan RSlarni alohida faylga saqlab olish
 import json

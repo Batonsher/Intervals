@@ -1,4 +1,4 @@
-from model_settings import tanlanma_nomi
+from model_settings import tanlanma_nomi, tanlanma_nomi2
 from math import exp
 
 
@@ -92,7 +92,7 @@ for guruh in (guruh0, guruh1):
 
     [print(F"{len(row)}") for row in gaussosovskithuy]
     print(f"asd {len(gaussosovskithuy)}")
-    with open(f"out_data\\{tanlanma_nomi}\\guruh{c}.csv", 'w') as ofile:
+    with open(f"init_data\\{tanlanma_nomi2}\\guruh{c}.csv", 'w') as ofile:
         for row in gaussosovskithuy:
             s = [str(x) for x in row]
             s = '; '.join(s)

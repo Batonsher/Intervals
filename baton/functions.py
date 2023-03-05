@@ -49,12 +49,13 @@ def eta_finder(target, K1, K2):
 
     d1 = target.count(1)
     d2 = target.count(2)
-
+    # print(f"!! {d1} / {K1}, {d2} / {K2}")
     return d1 / K1, d2 / K2
 
 
 def tegishlilik_func(target, K1, K2):
     a = eta_finder(target, K1, K2)
+    # print(f"{a[0]} / ({a[0]} + {a[1]}) :: K1={K1} K2={K2} :: target={target} ")
     return a[0] / (a[0] + a[1])
 
 

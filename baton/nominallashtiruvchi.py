@@ -10,7 +10,7 @@ if __name__ == '__main__':
     if not os.path.exists(f"out_data\\{tanlanma_nomi}"):
         os.mkdir(f"out_data\\{tanlanma_nomi}")
 
-    with open(f"init_data\\{tanlanma_nomi}\\Objects.csv") as objfile:
+    with open(f"init_data\\{tanlanma_nomi}\\ObjectsJAD1.csv") as objfile:
         for row in objfile:
             DF.append([float(x) for x in row.split()])
 
@@ -24,11 +24,11 @@ if __name__ == '__main__':
 
     DF2 = DF.copy()
 
-    with open(f"out_data\\{tanlanma_nomi}\\intervals.txt", 'w'):
+    with open(f"out_data\\{tanlanma_nomi}\\intervalsJad.txt", 'w'):
         pass
 
     pickle_dict = dict()
-
+    turgun = []
     for c in range(len(DF[0])-1):
         print(f"\n\n{c+1}-alomat: \nMezon 2, -dan (kiradi), -gacha (kirmaydi), intervaldagi elementlar soni, f1(i)")
         ustun = [x[c] for x in DF]
@@ -44,17 +44,18 @@ if __name__ == '__main__':
             print(interval)
         # [print(interval) for interval in intervals]
         G = functions.gini_function(intervals, len(target))
-        print("Alomat turg'unligi:", G)
+        turgun.append(G)
+    print("Alomat turg'unligi:", sorted(turgun, reverse = True))
+    print(len(turgun))
 
     # for x in range(len(DF)):
     #     print("-", DF[x])
     #     print("+", DF2[x])
 
-    with open(f"out_data\\{tanlanma_nomi}\\Objects.csv", 'w') as outfile:
+    with open(f"out_data\\{tanlanma_nomi}\\ObjectsJad.csv", 'w') as outfile:
         for row in DF:
             a = ' '.join(map(str, row))
             outfile.write(a + '\n')
 
-
-    with open(f"out_data\\{tanlanma_nomi}\\intervals.baton", 'wb') as outfile:
+    with open(f"out_data\\{tanlanma_nomi}\\intervalsJad.baton", 'wb') as outfile:
         pickle.dump(pickle_dict, outfile)
