@@ -120,23 +120,94 @@ def intervalga_ajratish(ustun, target, K1, K2, result=None, indexlar=None, unsor
     return result
 
 
-def yangi_df(fullpath):
-    with open(fullpath) as infile:
-        pass
+def intervalga_ajratish_nominal(ustun, target, K1, K2,
+                                result=None, indexlar = None,
+                                unsorted_indexlar=None):
+    # print(ustun, target, K1,K2)
+    if not result:
+        result = []
+        indexlar = list(range(len(target)))
+        unsorted_indexlar = indexlar[:]
+
+    if not target: return result
+    # sorting
+    zipped_lists = zip(ustun, target, unsorted_indexlar)
+    sorted_pairs = sorted(zipped_lists)
+    ustun, target, unsorted_indexlar = [list(tuple) for tuple in zip(*sorted_pairs)]
+    #print(ustun)
+
+    # interval_uzunligi = float("-inf")
+
+    # print(target)
+    # print(ustun, target, K1, K2)
+    chap_chegara = 0
+    for ung_chegara in range(chap_chegara+1, len(ustun)+1):
+        eta = eta_finder(target[chap_chegara:ung_chegara], K1, K2)
+        mezon1 = None
+        # print(eta)
+
+        # print("ustun:", len(ustun), ung_chegara, ustun)
+        if ung_chegara != len(ustun) \
+            and ustun[ung_chegara] == ustun[ung_chegara-1]:
+            # print(ustun[ung_chegara], ustun[ung_chegara-1], ustun[ung_chegara] == ustun[ung_chegara-1])
+            continue
+        else:
+            # print( ustun[ung_chegara-1])
+            # interval_uzunligi = ung_chegara - chap_chegara
+            u = chap_chegara
+            v = ung_chegara
+            mezon1 = abs(eta[0] - eta[1])
+
+            u2, v2 = indexlar[u], indexlar[v] if v < len(target) else indexlar[v-1]+1
+
+            javob = (mezon1, u2, v2, ung_chegara, tegishlilik_func(target[u:v], K1, K2), unsorted_indexlar[u:v])
+            # print(maksi, u2, v2, interval_uzunligi, tegishlilik_func(target[u:v], K1, K2), indexlar)
+
+            result.append(javob)
+            break
+
+    # qolgan intervallar uchun
+    # if target[:u]:
+    #     result = intervalga_ajratish(ustun[:u], target[:u], K1, K2, result, indexlar[:u], unsorted_indexlar[:u])
+    if target[v:]:
+        result = intervalga_ajratish_nominal(ustun[v:], target[v:], K1, K2, result, indexlar[v:], unsorted_indexlar[v:])
+
+    return result
 
 
-def bittalik_rs(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2):
-    """
-    umumlashgan baxo
+#vaznli versiyani tekshirish uchun o'chirildi
+# def bittalik_rs(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2):
+#     """
+#     umumlashgan baxo
+#     :return:
+#     """
+#     if type(alomatlar_tuplami) == type(1): alomatlar_tuplami = range(alomatlar_tuplami)
+#
+#     obyektning_umulashgan_bahosi = dict()
+#     for obj_key in range(obyektlar_soni):
+#         RS = 0
+#         for feature_key in alomatlar_tuplami:
+#             RS += (intervaldagi_vakillar[obj_key][feature_key][0] / K1 -
+#                    intervaldagi_vakillar[obj_key][feature_key][1] / K2)
+#
+#         obyektning_umulashgan_bahosi[obj_key] = RS
+#     return obyektning_umulashgan_bahosi
+
+
+def bittalik_rs_vaznli(obyektlar_soni, alomatlar_tuplami, intervaldagi_vakillar, K1, K2, vazn):
+    """ umumlashgan baxo
     :return:
     """
-    if type(alomatlar_tuplami) == type(1): alomatlar_tuplami = range(alomatlar_tuplami)
+    # print(alomatlar_tuplami, vazn.items())
+    if type(alomatlar_tuplami) == int: alomatlar_tuplami = range(alomatlar_tuplami)
 
     obyektning_umulashgan_bahosi = dict()
     for obj_key in range(obyektlar_soni):
         RS = 0
+
         for feature_key in alomatlar_tuplami:
-            RS += (intervaldagi_vakillar[obj_key][feature_key][0] / K1 -
+            RS += vazn[feature_key] * \
+                  (intervaldagi_vakillar[obj_key][feature_key][0] / K1 -
                    intervaldagi_vakillar[obj_key][feature_key][1] / K2)
 
         obyektning_umulashgan_bahosi[obj_key] = RS
