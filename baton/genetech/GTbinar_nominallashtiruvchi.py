@@ -62,7 +62,7 @@ col = 0
 for item in tochnost.items():
     print(item)
 
-with open(f"..\\..\\out_data\\{tanlanma_nomi}\\binar_nominal_objects.csv", mode='w') as outfile:
+with open(f"..\\..\\init_data\\{tanlanma_nomi}\\ObjectsNominalBinar.csv", mode='w') as outfile:
     for row in DF2:
         s = [str(x) for x in row]
         s = ' '.join(s)

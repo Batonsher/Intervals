@@ -10,9 +10,9 @@ if __name__ == '__main__':
     if not os.path.exists(f"..\\..\\out_data\\{tanlanma_nomi}"):
         os.mkdir(f"..\\..\\out_data\\{tanlanma_nomi}")
 
-    with open(f"..\\..\\init_data\\{tanlanma_nomi}\\Objects.csv") as objfile:
+    with open(f"..\\..\\init_data\\{tanlanma_nomi}\\ObjectsNominalBinar.csv") as objfile:
         for row in objfile:
-            DF.append([float(x) for x in row.split(";")])
+            DF.append([float(x) for x in row.split()])
 
     target = []
 

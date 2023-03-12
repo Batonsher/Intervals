@@ -128,7 +128,7 @@ for y in range(1000):
 
     kupayuvchi_alomatlar_tuplami = {u}
     print("P, TYPLAM")
-    print(kamayuvchi_alomatlar_tuplami, kupayuvchi_alomatlar_tuplami)
+    print(kamayuvchi_alomatlar_tuplami, kupayuvchi_alomatlar_tuplami, fv2[u])
 
 
     # Цикл по t∊{1,…,h} R(St) = ηu(atu). Конец цикла; cr1=10. P=P\{u}.
@@ -183,7 +183,7 @@ for y in range(1000):
                     gamma += abs(RS[obj_key] + tmp_RS[obj_key] - mat_kutilish1)
 
             # Если θ/γ < cr1, то cr1= θ/ γ, q=u.
-            print(f";{candidate_feature:2d},\t{tetta:2.4f}/{gamma:2.4f} =\t{tetta/gamma:2.4f}")
+            # print(f";{candidate_feature:2d},\t{tetta:2.4f}/{gamma:2.4f} =\t{tetta/gamma:2.4f}")
             if tetta / gamma < tmp_mezon:
                 tmp_mezon = tetta / gamma
                 found_candidate_feature = candidate_feature
@@ -196,8 +196,8 @@ for y in range(1000):
         if tmp_mezon < umumiy_mezon:
             # crit=cr1. P=P\{q}. TYPLAM=TYPLAM ∪{q}.  cr1=10.
 
-            print(f"^{tmp_mezon} < {umumiy_mezon}")
-            print("found_candidate_feature=", found_candidate_feature)
+            # print(f"^{tmp_mezon} < {umumiy_mezon}")
+            # print("found_candidate_feature=", found_candidate_feature)
 
             umumiy_mezon = tmp_mezon
             tmp_mezon = float('inf')
@@ -228,10 +228,11 @@ for y in range(1000):
 
     # Шаг 5. Если   |P|≥2, то идти 2; Иначе вывод  mikdor.
     if len(kamayuvchi_alomatlar_tuplami) >= 2:
-        # print("if len(kamayuvchi_alomatlar_tuplami) >= 2:", kamayuvchi_alomatlar_tuplami)
+        print("if len(kamayuvchi_alomatlar_tuplami) >= 2:", kamayuvchi_alomatlar_tuplami)
+
         continue
     else:
-        print("BREAK#2: ", len(kupayuvchi_alomatlar_tuplami))
+        print("BREAK#2: ", len(kupayuvchi_alomatlar_tuplami), kupayuvchi_alomatlar_tuplami)
 
     if not fv:
         print("FV tugadi2")
